@@ -19,7 +19,7 @@ var csvObjects = {
                 var array = arrayWithoutComments(csvArray);
                 var headers = array.shift();
                 var objectsArray = array.map(function(row) {
-                   return createRowObject(headers, {});
+                   return createRowObject(headers, row);
                 });
                 callback(null, objectsArray);
             }
@@ -39,10 +39,15 @@ function arrayWithoutComments(csvArray) {
         }
     });
 
-    var cleanArray = array_withNoCommentedOutLines.map(function(row) {
-        return row.filter(function(cell, index) {
-            return commentedOutColumnIndexes.indexOf(index) >= 0;
+    var cleanArray = array_withNoCommentedOutLines.map(function(row, index) {
+        if (index === 0) {
+            return row;
+        }
+        var filteredRows = row.filter(function(cell, index) {
+            return commentedOutColumnIndexes.indexOf(index) === -1;
         });
+
+        return filteredRows;
     });
 
     return cleanArray;

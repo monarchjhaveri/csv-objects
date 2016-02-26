@@ -26,6 +26,7 @@ function traversePath(object, pathArray, value) {
 
     if (isArrayNode(thisNode)) {
         var newObject = {};
+        var nodeNameToSet = thisNode.slice(-2);
         object[thisNode] = object[thisNode] || [];
         object[thisNode].push(newObject);
         return traversePath(newObject, pathArray, value);
@@ -34,7 +35,10 @@ function traversePath(object, pathArray, value) {
         object[thisNode] = newObject;
         return traversePath(newObject, pathArray, value);
     } else if (pathArray.length === 0) {
-        object[thisNode] = isNumberNode(thisNode) ? +value : value;
+        var isNumber = isNumberNode(thisNode);
+        var valueToSet = isNumber ? +value : value;
+        var nodeNameToSet = isNumber? thisNode.slice(0,-1) : thisNode;
+        object[nodeNameToSet] =  valueToSet;
         return object;
     } else {
         throw new Error("Unknown state in path traversal tree. Check if csv-object was configured properly.");
