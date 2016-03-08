@@ -1,6 +1,6 @@
 {
   "name": "csv-objects",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Library to convert CSV files to JSON objects, with support for nested arrays and objects",
   "main": "src/csv-objects.js",
   "scripts": {
