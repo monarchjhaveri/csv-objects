@@ -20,6 +20,8 @@ var csvObjects = {
                 var headers = array.shift();
                 var objectsArray = array.map(function(row) {
                    return createRowObject(headers, row);
+                }).filter(function(row) {
+                    return !!row;
                 });
                 callback(null, objectsArray);
             }

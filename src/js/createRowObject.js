@@ -15,7 +15,12 @@ module.exports = function createRowObject(headersArray, values) {
         var value = values[index];
         traversePath(object, pathArray, value, rowContext);
     });
-    return object;
+
+    if(!cleanup(object)) {
+        return null;
+    } else {
+        return object;
+    }
 };
 
 /**
@@ -71,6 +76,7 @@ function traversePath(object, pathArray, value, rowContext) {
         }
 
         traversePath(nextObject, pathArray, value, rowContext);
+
         return object;
     }
     else if (pathArray.length > 0) {
@@ -111,4 +117,43 @@ function isKeyStringDefinition(nodeString, pathArray) {
 
 function hasDefinedKeyString(nodeString, pathArray) {
     return pathArray.length !== 0 && nodeString[0] === "{" && nodeString[nodeString.length - 1] === "}";
+}
+
+function cleanup(rowObject) {
+    // if falsey except 0 and empty string, indicate removal.
+    if (!rowObject && rowObject !== "" && rowObject !== 0) {
+        return false;
+    }
+
+    // All values from this point forth are truthy.
+
+    // deal with arrays here
+    if (rowObject instanceof Array) {
+        // Traverse each child, and if return is false then splice it out
+        // Arrays are always retained, even empty ones.
+        var i = rowObject.length;
+        while(i--) {
+            if(!cleanup(rowObject[i])) {
+                rowObject.splice(i, 1);
+            }
+        }
+        return true;
+    }
+
+    // deal with objects here
+    if (typeof rowObject === "object") {
+        // traverse each child, and if return is false then delete it.
+        Object.keys(rowObject).forEach(function(key) {
+           if(!cleanup(rowObject[key])) {
+               delete rowObject[key];
+           }
+        });
+
+        // if object is now empty, indicate removal
+        if (Object.keys(rowObject).length === 0) {
+            return false;
+        }
+    }
+
+    return true;
 }

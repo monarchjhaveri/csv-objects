@@ -23,7 +23,7 @@ describe("Defined Key Parsing", function() {
     it("reads a simple file and outputs expected object with defined key", function(done) {
         var sample1 = sample("John Smith","Jack Smith","Julie Smith","Male",32,"Sandy Smith",12,"Male");
         var sample2 = sample("James Dean","Jacob Dean","Janette Dean-Smith","Male",18);
-        delete sample2.children;
+        sample2["James Dean"].children = [];
         var sample3 = sample("Julie Dawes","Jaden Dawes","Nicole Dawes","Female",34,"Rachel Higgins",2,"Female");
 
         expect(this.parsedObject).toEqual(jasmine.objectContaining([sample1, sample2, sample3]));
