@@ -22,18 +22,20 @@ describe("Simple parsing", function() {
 
     it("reads a simple file and outputs expected simple object", function(done) {
         expect(this.parsedObject).toEqual(jasmine.objectContaining([
-            sample("John","Smith",32),
-            sample("Linda","Thatcher",25),
-            sample("Jane","Marley",25)
+            sample("John","Smith",32,true,false),
+            sample("Linda","Thatcher",25,false,true),
+            sample("Jane","Marley",25,true,false)
         ]));
         done();
     });
 });
 
-function sample(firstName, lastName, age) {
+function sample(firstName, lastName, age, licensed, registered) {
     return {
         firstName: firstName,
         lastName: lastName,
-        age: age
+        age: age,
+        licensed: licensed,
+        registered: registered
     }
 }

@@ -13,6 +13,10 @@ If a header ends in `#`, it will be converted to a number. For example, `person.
 If a config path ends in `[]`, it will be treated as an array. For example, `person.parents[].age#` says that the
 `parents` property is an array, within which exist objects with the property `age`; and `age` is a number.
 
+### Boolean Values
+If a header ends in `?`, it will be converted to a number. For example, `person.licensed?` will be converted to a boolean.
+Acceptable values are `true/false`, `y/n` and `1/0`.
+
 ### Comments
 If a cell starts with a single `#`, for example `# hello world` it will be ignored (will be treated as an empty cell)
 If the first cell of a row starts with `##`, for example `## hello world`, the entire row will be ignored.
@@ -25,6 +29,27 @@ Simple nested properties can be defined in the header as follows:
 `person.parent.name`, `person.parent.age`
 
 if `person.parent` does not exist, it will be created.
+
+### Primitive properties in Arrays
+
+Sometimes you want to create an array of primitives (strings or integers) using the library.
+ For example, you might want to create an object like the following:
+ 
+```
+[{
+    integers: [1,2,3,4,5],
+    strings: ["one","two","three","four","five"],
+    boolean: [true,false,true,false,true,false]
+}]
+```
+
+To do this, use the pipe character `|` as a delimiter and define your headers as follows:
+
+```
+integers#[],strings[],boolean?[]
+1|2|3|4|5,one|two|three|four|five,true|false|1|0|y|n
+```
+Keep in mind that mixed data types in the same array are not supported. 
 
 ### Defining Keys In CSV
 

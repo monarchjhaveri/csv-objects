@@ -1,3 +1,6 @@
+var BOOLEAN_TRUE_VALUES = ["true","t","y","1"];
+var BOOLEAN_FALSE_VALUES = ["false","f","n","0"];
+
 /**
  *
  * @param headersArray
@@ -90,10 +93,27 @@ function traversePath(object, pathArray, value, rowContext) {
             valueToSet = (isNaN(value) || value === null) ? undefined : +value;
             terminalNodeName = nodeNameToSet.slice(0,-1);
         }
+        else if (isBooleanNode(nodeNameToSet)) {
+            if (BOOLEAN_TRUE_VALUES.indexOf(value) >= 0) {
+               valueToSet = true;
+            }
+            else if (BOOLEAN_FALSE_VALUES.indexOf(value) >= 0) {
+                valueToSet = false;
+            }
+            else {
+                throw Error("Tried to convert [" + value + "] to boolean, but was not acceptable boolean value.");
+            }
+            terminalNodeName = nodeNameToSet.slice(0,-1);
+        }
         else { // is string
             valueToSet = value;
             terminalNodeName = nodeNameToSet;
         }
+
+        if(terminalNodeName.length === 0) {
+            throw Error("Key names must be of length 1 or greater.");
+        }
+
         object[terminalNodeName] = valueToSet;
         return object;
     }
@@ -110,6 +130,10 @@ function isNumberNode(nodeString) {
     return nodeString.slice(-1) === "#";
 }
 
+function isBooleanNode(nodeString) {
+    return nodeString.slice(-1) === "?";
+}
+
 function isKeyStringDefinition(nodeString, pathArray) {
     // returns true if the string is the last node on the path, and is of the format "{...}"
     return pathArray.length === 0 && nodeString[0] === "{" && nodeString[nodeString.length - 1] === "}";
@@ -120,12 +144,10 @@ function hasDefinedKeyString(nodeString, pathArray) {
 }
 
 function cleanup(rowObject) {
-    // if falsey except 0 and empty string, indicate removal.
-    if (!rowObject && rowObject !== "" && rowObject !== 0) {
+    // if falsey except 0, empty string and boolean, then indicate removal.
+    if (!rowObject && rowObject !== "" && rowObject !== 0 && rowObject !== false) {
         return false;
     }
-
-    // All values from this point forth are truthy.
 
     // deal with arrays here
     if (rowObject instanceof Array) {
