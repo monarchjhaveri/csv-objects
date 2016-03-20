@@ -18,7 +18,7 @@ If a cell starts with a single `#`, for example `# hello world` it will be ignor
 If the first cell of a row starts with `##`, for example `## hello world`, the entire row will be ignored.
 If a header cell is commented out, that column is skipped over on each row.
 
-## Nested properties
+### Nested properties
 
 Simple nested properties can be defined in the header as follows:
 
@@ -26,5 +26,44 @@ Simple nested properties can be defined in the header as follows:
 
 if `person.parent` does not exist, it will be created.
 
+### Defining Keys In CSV
+
+Often, you may wish to define a key string in CSV format. To do so, you would use `{key}`
+
+The following file:
+```
+{key1},{key1}.month,{key2},{key2}.month
+shipment_1,jan,return_1,feb
+shipment_2,feb
+shipment_3,mar,return2,mar
+```
+
+Will translate to the following object:
+```
+[
+    { "shipment_1":"jan","return_1":"feb"},
+    { "shipment_2":"feb"},
+    { "shipment_3":"mar","return2":"mar"}
+]
+```
 
 
+### Creating objects instead of arrays
+
+The best way to create objects instead of arrays is to use the method described in __Defining Keys in CSV__.
+After creating such an array, you can run the following code to flatten the array into an object.
+You are encouraged to write your own methods for this, since it is impossible to cover all cases for creating objects instead of arrays inside a library.
+
+```
+var csvObjects = require('csv-objects');
+var csvString = exampleFileAbove;
+
+csvObjects.parse(csvString, function(err, arrayData) {
+    let objectData = {};
+    arrayData.forEach((obj) => {
+        let key = Object.keys(obj)[0]; // get the key
+        if (objectData[key]) throw Error("Key [" + key + "] was defined twice!");
+        objectData[key] = obj[key]; // set the data value against the key.
+    });
+});
+```

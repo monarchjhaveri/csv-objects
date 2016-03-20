@@ -1,0 +1,4 @@
+{x},{x}.father,{x}.mother,{x}.gender,{x}.age#,{x}.children[].name,{x}.children[].age#,{x}.children[].gender
+John Smith,Jack Smith,Julie Smith,Male,32,Sandy Smith,12,Male
+James Dean,Jacob Dean,Janette Dean-Smith,Male,18
+Julie Dawes,Jaden Dawes,Nicole Dawes,Female,34,Rachel Higgins,2,Female
