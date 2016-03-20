@@ -22,9 +22,9 @@ describe("Simple parsing", function() {
 
     it("reads a simple file and outputs expected simple object", function(done) {
         expect(this.parsedObject).toEqual(jasmine.objectContaining([
-            sample("John","Smith",32,true,false),
-            sample("Linda","Thatcher",25,false,true),
-            sample("Jane","Marley",25,true,false)
+            sample("John","Smith",undefined,true,false),
+            sample("Linda","Thatcher",25,undefined,true),
+            sample("Jane","Marley",25,false,undefined)
         ]));
         done();
     });

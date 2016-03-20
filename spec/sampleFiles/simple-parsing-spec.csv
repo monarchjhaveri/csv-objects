@@ -1,4 +1,4 @@
 firstName,lastName,age#,licensed?,registered?
-"John","Smith",32,true,false
-"Linda","Thatcher",25,n,y
-"Jane","Marley",25,1,0
+"John","Smith",,true,false
+"Linda","Thatcher",25,,y
+"Jane","Marley",25,0

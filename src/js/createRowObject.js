@@ -66,7 +66,7 @@ function traversePath(object, pathArray, value, rowContext) {
         }
     }
 
-    if (isArrayNode(nodeNameToSet)) {
+    if (isArrayNode(nodeNameToSet) && pathArray.length > 0) {
         var arrayNodeNameToSet = nodeNameToSet.slice(0, -2);
         object[arrayNodeNameToSet] = object[arrayNodeNameToSet] || [];
 
@@ -86,28 +86,24 @@ function traversePath(object, pathArray, value, rowContext) {
         object[nodeNameToSet] = object[nodeNameToSet] || {};
         return traversePath(object[nodeNameToSet], pathArray, value, rowContext);
     }
+    // set terminal primitive value, either by itself or in array. If isArray, split by "|"
     else if (pathArray.length === 0) {
+        var isArray = isArrayNode(nodeNameToSet);
+
         var valueToSet = undefined;
-        var terminalNodeName = undefined;
-        if (isNumberNode(nodeNameToSet)) {
-            valueToSet = (isNaN(value) || value === null) ? undefined : +value;
-            terminalNodeName = nodeNameToSet.slice(0,-1);
+        var terminalNodeName = isArray ? nodeNameToSet.slice(0,-2) : nodeNameToSet;
+
+        if (isNumberNode(terminalNodeName)) {
+            valueToSet = isArray ? massConvert(value, convertToNumber) : convertToNumber(value);
+            terminalNodeName = terminalNodeName.slice(0,-1);
         }
-        else if (isBooleanNode(nodeNameToSet)) {
-            if (BOOLEAN_TRUE_VALUES.indexOf(value) >= 0) {
-               valueToSet = true;
-            }
-            else if (BOOLEAN_FALSE_VALUES.indexOf(value) >= 0) {
-                valueToSet = false;
-            }
-            else {
-                throw Error("Tried to convert [" + value + "] to boolean, but was not acceptable boolean value.");
-            }
-            terminalNodeName = nodeNameToSet.slice(0,-1);
+        else if (isBooleanNode(terminalNodeName)) {
+            valueToSet = isArray ? massConvert(value, convertToBoolean) : convertToBoolean(value);
+            terminalNodeName = terminalNodeName.slice(0,-1);
         }
         else { // is string
-            valueToSet = value;
-            terminalNodeName = nodeNameToSet;
+            // don't modify terminalNodeName
+            valueToSet = isArray ? value.split("|").filter(function(s){return s.length > 0;}) : convertToString(value);
         }
 
         if(terminalNodeName.length === 0) {
@@ -130,8 +126,53 @@ function isNumberNode(nodeString) {
     return nodeString.slice(-1) === "#";
 }
 
+function convertToNumber(value) {
+    if (value === null || value === undefined || value === "") {
+        return undefined;
+    }
+
+    if (!isNumeric(value)) {
+        throw Error("The value [" + value + "] is not numeric, but is under a header that expects it to be numeric.");
+    }
+    return +value;
+}
+
+function convertToString(value) {
+    if (value === null || value === undefined || value === "") {
+        return undefined;
+    }
+
+    return value;
+}
+
+function massConvert(value, conversionFunction) {
+    return value.split("|").map(function(v) {
+        return conversionFunction(v);
+    });
+}
+
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 function isBooleanNode(nodeString) {
     return nodeString.slice(-1) === "?";
+}
+
+function convertToBoolean(value) {
+    if (value === null || value === undefined || value === "") {
+        return undefined;
+    }
+
+    if (BOOLEAN_TRUE_VALUES.indexOf(value) >= 0) {
+        return true;
+    }
+    else if (BOOLEAN_FALSE_VALUES.indexOf(value) >= 0) {
+        return false;
+    }
+    else {
+        throw Error("Tried to convert [" + value + "] to boolean, but was not acceptable boolean value.");
+    }
 }
 
 function isKeyStringDefinition(nodeString, pathArray) {

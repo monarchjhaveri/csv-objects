@@ -1,4 +1,4 @@
 name,number#,children[].name,children[].number#,children[].children[].name,children[].children[].number#
 Alpha,100,Beta,200,Omega,300
-One,1,Two,2,Three,3
+One,1,Two,2,,3
 Parent,63,Child,43,Grandchild,23

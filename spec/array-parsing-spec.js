@@ -23,7 +23,7 @@ describe("Simple parsing", function() {
     it("reads a simple file and outputs expected simple object", function(done) {
         expect(this.parsedObject).toEqual(jasmine.objectContaining([
             sample("Alpha", 100, "Beta", 200, "Omega", 300),
-            sample("One", 1, "Two", 2, "Three", 3),
+            sample("One", 1, "Two", 2, undefined, 3),
             sample("Parent", 63, "Child", 43, "Grandchild", 23)
         ]));
         done();

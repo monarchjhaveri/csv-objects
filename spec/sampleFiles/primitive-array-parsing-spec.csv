@@ -1,0 +1,5 @@
+{name},{name}.string[],{name}.number#[],{name}.boolean?[]
+John,ax|bx|cx|dx|ex,12|23|34|45|56,t|f|y|n|true|false
+JaneDoe,john|jon,12215125|32523,true
+Janette,,,
+Dumbo,true|false|true|false,0|0|0|0,f|f|f|f
