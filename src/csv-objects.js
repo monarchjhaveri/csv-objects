@@ -31,7 +31,7 @@ var csvObjects = {
 
 function arrayWithoutComments(csvArray) {
     var array_withNoCommentedOutLines = csvArray.filter(function(row) {
-        return (row[0].slice(0,2) !== "#");
+        return (row[0].slice(0,2) !== "##");
     });
 
     var commentedOutColumnIndexes = [];
